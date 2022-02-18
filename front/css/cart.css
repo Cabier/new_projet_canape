@@ -65,12 +65,34 @@ h2 {
 	margin-right: 10px;
 	display: flex;
 }
+.cart__item__content__settings__delete {
+font-size: 22px;
+	border-radius: 40px;
+	border: 0;
+	background-color: var(--secondary-color);
+	color: white;
+	padding: 18px 28px;
+	cursor: pointer;
+	margin-top: 40px;
+	width:20% ;
+}
 .cart__item__content__settings__delete p {
 	display: inline;
 }
 .cart__item__content__settings__delete p:hover {
 	cursor: pointer;
 	font-weight: 700;
+	box-shadow: rgb(42 18 206 / 90%) 0 0 22px 6px;
+}
+.deleteItem {
+	font-size: 18px;
+	border-radius: 30px;
+	border: 0;
+	background-color: var(--secondary-color);
+	color: white;
+	padding: 0px 10px 0 30px;
+	cursor: pointer;
+	
 }
 
 /*******/
@@ -133,6 +155,7 @@ h2 {
 .cart__order__form__submit input:hover {
 	box-shadow: rgb(42 18 206 / 90%) 0 0 22px 6px;
 }
+
 
 
 
