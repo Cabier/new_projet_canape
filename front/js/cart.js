@@ -85,12 +85,7 @@ else {
     });
 
 };
-//------------------QUANTITE -------------------//
 
-// CHOISIR LE NOMBRE DE QUANTITE POSSIBLE 
-const structureQuantité = `
-
-` 
 
 
 

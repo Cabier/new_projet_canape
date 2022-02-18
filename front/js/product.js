@@ -1,13 +1,4 @@
-/* 
-URL DU SITE http://localhost:5500/front/html/product.html?id=107fb5b75607497b96722bda5b504926
-QUERY PARAM ID DE l'URL = 107fb5b75607497b96722bda5b504926
- SUPOSE DE LA ROUTE API POUR 1 PRODUIT http://localhost:3000/api/products/${article.Id}
-
-http://localhost:3000/api/products/107fb5b75607497b96722bda5b504926
-
-*/
-
-async function main() {
+  async function main() {
   const articleId =  getArticleId();
   
   const article = await getArticle(articleId); //await attend resultat d'une promesse
@@ -17,34 +8,7 @@ async function main() {
   //Selection des couleurs du canapé et changement de l'image
   let optionColorChange = document.querySelector("#colors");
   console.log(optionColorChange)
-  //mettre le choix de l'utilisateur dans une variable
- 
-  //const choixFormColor = optionColorChange.value;
-  //for (i = 0; i < optionColorChange.length; i++ ){
-   //structure3=`
-   //<select name="color-select" id="colors">
-                      //<option value="">--SVP, choisissez une couleur --</option>
-                          //<option value="Blue">${colors}</option>
-                        //<option value="blanc">${colors}</option> 
-                    //</select>
-   // let structure3=[];
- 
-  
-  
-    
-   
-  
-  //const choixColors = optionColorChange;
-  //console.log(choixColors);
-  //optionColorChange.addEventListener("click",(event)=>{
-  //if (optionColorChange.appendChild == Blue){
-   // Blue
-  //}
-  //else {
-    //blanc
-//}})
-//console.log(optionColorChange)
-  //recuperation du bouton
+
   let bouton = document.getElementById("addToCart");
   bouton.addEventListener("click", (event) => {
     addToCart(article)
@@ -52,9 +16,26 @@ async function main() {
   //selection id du formulaire
   //Selection des couleurs du canapé et changement de l'image
   
-  })};
- 
-function addToCart(article) {
+  })
+ const optionQuantite = document.querySelector("#quantity");
+ console.log(optionQuantite)
+  let structureProduitQuantité = [];
+  for (let j =0; j < optionQuantite.length;j++ ) {
+    structureProduitQuantité=
+    structureProduitQuantité +
+    `
+    <div class="cart__item__content__settings">
+                    <div class="cart__item__content__settings__quantity">
+                      <p>Qté : </p>
+                      <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${optionQuantite[j]}">
+                    </div>
+
+    `
+  }
+}
+// quantite : choisir la quantitié de produit possible
+const structureQuantité = 
+  function addToCart(article) {
     // console.log("article ", article);
     // Soit on a déja un panier => on le récupere et ça devient cart
     actualCartString = localStorage.getItem("cart");
@@ -95,20 +76,17 @@ function addToCart(article) {
     }
 
 
-    // -------------------l'AFFICHAGE DES PRODUITS DU PANIER-----------//
-    //SELECTION DE LA ID OU JE VAIS INJECTER LE CODE HTML
-    //-------------LA GESTION DU PANIER-----------//
-  //selection de l'id du formulaire//
+ 
     
 }
   
   
 
-function getArticleId() {
+  function getArticleId() {
   return new URL(document.location).searchParams.get("id");
 }
 
-function getArticle(articleId) {
+  function getArticle(articleId) {
   let url = "http://localhost:3000/api/products/" + articleId;
 
   console.log("URL API /> 1 produit ", url); // ERREUR DE STRING
@@ -131,12 +109,16 @@ function hydrateArticle(article) {
   article.colors.forEach((el) => {
     optionColor = optionColor + `<option value="${el}">${el}</option>`;
   });
+  //let optionQuantite = "";
+  //input.quantity.forEach((elements) => {
+    //optionQuantite = optionQuantite +`<input type="number" name="itemQuantity" min="1" max="100" value="${elements}" id="quantity">`  
+  //});
   cloneElt.getElementById("imgitem").src = article.imageUrl;
   cloneElt.getElementById("title").textContent = article.name;
   cloneElt.getElementById("price").textContent = article.price;
   cloneElt.getElementById("description").textContent = article.description;
   cloneElt.getElementById("colors").innerHTML = optionColor;
-
+  //cloneElt.getElementById("quantity").innerHTML = optionQuantite;
   document.getElementById("item").appendChild(cloneElt);
 }
 
