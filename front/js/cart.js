@@ -1,46 +1,46 @@
 
-cart = JSON.parse(localStorage.getItem("cart"));
-
-
-
-actualCartString = JSON.parse(localStorage.getItem("cart"));
-console.log(cart)
+let actualCartString = localStorage.getItem("cart");
+let cart = [];
+if (actualCartString != null) {
+  cart = JSON.parse(actualCartString);
+}
+console.log("cart:>", cart)
 let cartaImplementer = document.querySelector("#cart__items");
+console.log("cartaImplementer :>", cartaImplementer);
 
-
-console.log(cartaImplementer);
+let htmlPannier = "";
 //si le panier est vide : afficher le panier est vide
-if(actualCartString === null ||actualCartString == 0 ){
-    let panierVide = `
+if (cart.length <= 0) {
+  htmlPannier = `
     <article class="cart__item" data-id="{product-ID}">
     <div class="container-panier-vide">
         <div> Le panier est vide </div>
     </div>    
-    `;
-    cartaImplementer.innerHTML = panierVide;
-    
-    console.log("je suis vide");
-    
+  `;
 }
 else {
     //si le panier n'est pas vide afficher le produit dans le local storage
-   let structureProduitPanier =  [];
-  for(k = 0;k < actualCartString.length; k++){
-    structureProduitPanier = structureProduitPanier + `
+  for(k = 0;k < cart.length; k++){
+    htmlPannier = htmlPannier + `
     <section id="cart__items">
-        <article class="cart__item" data-id="${actualCartString[k]._id}">
+        <article class="cart__item" data-id="${cart[k]._id}">
                 <div class="cart__item__img">
-                  <img src=${actualCartString[k].imageUrl}>  ${actualCartString[k].altTxt}
+                  <img src=${cart[k].imageUrl}>  ${cart[k].altTxt}
                 </div>
                 <div class="cart__item__content">
                   <div class="cart__item__content__titlePrice">
-                    <h2>${actualCartString[k].name}</h2>
-                    <p>${actualCartString[k].price} €</p>
+                    <h2>${cart[k].name}</h2>
+                    <h2>${cart[k].selectedColor}</h2>
+                    <p>${cart[k].price} €</p>
                   </div>
                   <div class="cart__item__content__settings">
                     <div class="cart__item__content__settings__quantity">
-                      <p>Qté : </p>
-                      <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="1">
+                    
+                      <p>Qté :${cart[k].quantite}</p>
+                      <div>
+                        
+                      </div>
+                      <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${cart[k].quantite}">
                     </div>
                     <div class="cart__item__content__settings__delete">
                       <button class="deleteItem">Supprimer</button>
@@ -52,14 +52,9 @@ else {
     `;
     //affichage_image.insertAdjacentHTML5()
   }
-    if(k === actualCartString.length) { 
-    cartaImplementer.innerHTML = structureProduitPanier;
+}
+cartaImplementer.innerHTML = htmlPannier;
 
-    }
-  }
-      console.log("nombre de produit ajouté " + actualCartString.length);
-
-    console.log("je ne suis pas vide");
 
 //----------------GESTION DU BOUTON SUPPRIMER L'ARTICLE-------------------//
   // sélection des références de tous les boutons btn-supprimer
@@ -70,8 +65,8 @@ else {
   // Dans LocalStorage : suppression de l'article sélectionné //
   for (let i = 0; i < deleteItem.length; i++) {
 
-    deleteItem[i].addEventListener('click', () => {
-
+    deleteItem[i].addEventListener('click', (event) => {
+     
         deleteItem[i].parentElement.style.display ="none";
         
         
@@ -81,19 +76,25 @@ else {
        cart = localStorage.setItem('cart', JSON.stringify(tab));
 
         window.location.href ="cart.html";
-
+      event.preventDefault
+      document.location.reload() 
     });
 
 };
+function updateQuantity () {
+const updateArticle = input.closest('article');
+//RECUPERATION DE L'INDEX AVEC L'ID et le DARA-COLOR
 
+
+}
 
 
 
 // délaration de la variable pour pouvoir mettre des prix qui sont dans le panier
 let prixTotalCalcul = [];
 //chercher les prix dans le panier
-for (let p = 0;p < actualCartString.length ; p++ ) {
-  let prixProduitDansLePanier = actualCartString[p].price;
+for (let p = 0;p < cart.length ; p++ ) {
+  let prixProduitDansLePanier = cart[p].price * cart[p].quantite;
   prixTotalCalcul.push(prixProduitDansLePanier) // en général quand c'est un tableau on push
   console.log(prixTotalCalcul);
   //mettre les prix du panier dans la variable "prixTotalCalcul"
@@ -108,23 +109,29 @@ console.log("total prix " + prixTotal)
 let insertionPrix = document.querySelector(".cart__price");
 console.log(insertionPrix);
 let structure2 =[];
-for(z = 0;z < actualCartString.length; z++){
+for(z = 0;z < cart.length; z++){
   structure2 = `
  
 <p>Total (<span id="totalQuantity"><!-- 2 --></span> articles) : <span id="totalPrice">${prixTotal}</span> €</p>
 </div>`;
 }
-if(z === actualCartString.length ) {
+if(z === cart.length ) {
   insertionPrix.innerHTML = structure2;
 }
 //----------------FIN DU MONTANT TOTAL DU PANIER------------------//
 
+//-----------------SUPPRIMER TOUT LE PANIER-----------------------//
+const btntoutSupprimer =`<button class ="btn-tout-supprimer> Vider le panier </button>`;
+insertionPrix.insertAdjacentHTML("beforeend",btntoutSupprimer);
 //----------------FORMULAIRE DE COMMANDE--------------------//
+console.log(insertionPrix)
+
 
 
 const afficherFormulaireHtml = () => {
 //SELECTION ELEMENT DU DOM pour le positionnement du formulaire
-const positionElement4 = document.querySelector("#")
+const positionElement4 = document.querySelector(".cart__order");
+console.log(positionElement4)
   const structureFormulaire = `
   <div class="cart__order">
               <form method="get" class="cart__order__form">
@@ -158,6 +165,57 @@ const positionElement4 = document.querySelector("#")
                 </div>
               </form>
             </div>
-  `
+  `;
+
+  positionElement4.insertAdjacentHTML("afterend",structureFormulaire);
 }
+afficherFormulaireHtml();
+//sélection du bouton commander
+const btnCommanderEnvoyerLeFormulaire = document.querySelector("#order");
+console.log(btnCommanderEnvoyerLeFormulaire)
+//------------------------ADD EVEN LISTENER--------------------//
+btnCommanderEnvoyerLeFormulaire.addEventListener("click", (e)=> {
+  e.preventDefault();
+const formulaireContact = {
+prenom : document.querySelector("#firstName").value,
+nom : document.querySelector("#lastName").value,
+address : document.querySelector("#address").value,
+city : document.querySelector("#city").value,
+email : document.querySelector("#email").value,
+}
+console.log("formulaireContact");
+console.log(formulaireContact);
+console.log(document.querySelector("#firstName").value)//franklin
+//Mettre l'objet "formulaireValues dans le local storage "
+localStorage.setItem("formulaireContact",JSON.stringify(formulaireContact));
+const aEnvoyer = {
+  actualCartString,
+  formulaireContact
+}
+//-------------------GESTION VALIDATION DU FORMULAIRE--------------------//
+
+  function prenomControle(){
+  //contrôle de la validité du prénom 
+  const lePrenom = formulaireContact.prenom;
+  if(/^[A-Za-z]{3,20}$/.test(lePrenom)){// [A-Z] pour contrôler toute les lettres qu'il y a entre a et z et {} quantificateur contrôlele nbr de caractere minimum de 3 caracere et max 20
+    console.log("ok");
+    return true
+  } else {
+    console.log("ko");
+    alert ("Chiffre et symbole ne sont pas autorisé\ne pas autorisé plus de 20 caractères")
+    return false
+  };
+  
+  }
+  console.log(lePrenom)
+  if(prenomControle()) {
+    //mettre l'objet dans le local storage
+    localStorage.setItem("formulaireContact",JSON.stringify(formulaireContact)); 
+   } else {
+     alert ("Veuillez bien remplir le formulaire")
+   }
+})
+// console.log(aEnvoyer);
+
+
 

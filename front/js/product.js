@@ -1,92 +1,73 @@
-  async function main() {
-  const articleId =  getArticleId();
-  
+async function main() {
+  const articleId = getArticleId();
+
   const article = await getArticle(articleId); //await attend resultat d'une promesse
+  console.log(article);
   hydrateArticle(article);
-
-  //selection id du formulaire
-  //Selection des couleurs du canapé et changement de l'image
-  let optionColorChange = document.querySelector("#colors");
-  console.log(optionColorChange)
-
-  let bouton = document.getElementById("addToCart");
-  bouton.addEventListener("click", (event) => {
-    addToCart(article)
-  event.preventDefault();  
-  //selection id du formulaire
-  //Selection des couleurs du canapé et changement de l'image
   
-  })
- const optionQuantite = document.querySelector("#quantity");
- console.log(optionQuantite)
-  let structureProduitQuantité = [];
-  for (let j =0; j < optionQuantite.length;j++ ) {
-    structureProduitQuantité=
-    structureProduitQuantité +
-    `
-    <div class="cart__item__content__settings">
-                    <div class="cart__item__content__settings__quantity">
-                      <p>Qté : </p>
-                      <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${optionQuantite[j]}">
-                    </div>
+  let bouton = document.getElementById("addToCart");
 
-    `
+  //recuperation du bouton
+
+  bouton.addEventListener("click", (event) => {
+    event.preventDefault();
+    addToCart(article);
+  });
+
+  function addToCart(article) {
+    /**
+     * Récuperer la couleur et la qte que l'user a demander
+     */
+    let laQuantite = document.getElementById("quantite").value;
+    let laCouleur = document.getElementById("colors").value;
+    /**
+     * récuperer le pannier obtenir cart
+     */
+    let cartString = localStorage.getItem("cart");
+    let cart = [];
+    if (cartString != null) {
+      // convertir cartString en Object
+      cart = JSON.parse(cartString);
+    }
+
+    /**
+     * Si le produit existe avec cette couleur on augmente la qte de + laQuantite;
+     * et on l'ajoute dans le pannier 
+     * return fin de fonction  (sinon on va ajouter le produit au pannier dans l'étape d'apres)
+     */
+    let findArticle = cart.find(ap => (ap._id == article._id && ap.selectedColor == laCouleur));
+    if ( findArticle ) {
+      let articleposition = cart.indexOf(findArticle); // position dans l'array de l'article
+      if (articleposition >= 0) {
+        cart[articleposition].quantite = parseInt(cart[articleposition].quantite) + parseInt(laQuantite);
+        cartString = JSON.stringify(cart);
+        localStorage.setItem("cart", cartString);
+        alert("votre produit à bien été ajouté");
+        return;
+      }
+    }
+    /**
+     * Le produit est pas dans le pnnaier on l'ajoute 
+     * Ajouter laQuantite et laCouleur 
+     * Mettre actricle dans cart
+     */
+    console.log("cart", cart);
+    article.quantite = parseInt(laQuantite);// trandorme en nombre
+    article.selectedColor = laCouleur;
+    console.log("article", article);
+    cart.push(article);
+    cartString = JSON.stringify(cart);
+    localStorage.setItem("cart", cartString);
+    alert("votre produit à bien été ajouté");
+    return;
   }
 }
-// quantite : choisir la quantitié de produit possible
-const structureQuantité = 
-  function addToCart(article) {
-    // console.log("article ", article);
-    // Soit on a déja un panier => on le récupere et ça devient cart
-    actualCartString = localStorage.getItem("cart");
 
-    //console.log("actualCartString", actualCartString);
-     cart = [];
-    if (actualCartString != null) {
-       // convertir actualCartString en Object
-       cart = JSON.parse(actualCartString)
-       //la console.log()
-       console.log(actualCartString)
-    }
-    else {
-      console.log("vraiment naze")
-    }
-    
-    console.log("ajout d'un nouvel article au  panier  : ", cart)
-    // Soit on a pas encore de pannier on part de let cart = [];
-    cart.push(article)
-    // console.log("cart",cart)
-     cartString = JSON.stringify(cart)
-     
-    // console.log("cartString", cartString);
-    localStorage.setItem("cart", cartString);
-    alert("votre produit à bien été ajouté")
-
-    //déclaration de la variable enregistré dans le local storage//
-    cart = JSON.parse(localStorage.getItem("cart"));
-    console.log(cart);
-
-    let foundArticle = cart.find(a => a.id == article.id);
-    if (foundArticle != undefined){
-      foundArticle.quantity++;
-    } else {
-      article.quantity = 1;
-      cart.push(article)
-
-    }
-
-
- 
-    
-}
-  
-  
-
-  function getArticleId() {
+function getArticleId() {
   return new URL(document.location).searchParams.get("id");
 }
 
-  function getArticle(articleId) {
+function getArticle(articleId) {
   let url = "http://localhost:3000/api/products/" + articleId;
 
   console.log("URL API /> 1 produit ", url); // ERREUR DE STRING
@@ -104,21 +85,22 @@ const structureQuantité =
 
 function hydrateArticle(article) {
   const templateElt = document.getElementById("templateArticle2"); //creation template//
+  console.log(templateElt);
+
   const cloneElt = document.importNode(templateElt.content, true);
+
   let optionColor = "";
   article.colors.forEach((el) => {
     optionColor = optionColor + `<option value="${el}">${el}</option>`;
   });
-  //let optionQuantite = "";
-  //input.quantity.forEach((elements) => {
-    //optionQuantite = optionQuantite +`<input type="number" name="itemQuantity" min="1" max="100" value="${elements}" id="quantity">`  
-  //});
+  
+
   cloneElt.getElementById("imgitem").src = article.imageUrl;
   cloneElt.getElementById("title").textContent = article.name;
   cloneElt.getElementById("price").textContent = article.price;
   cloneElt.getElementById("description").textContent = article.description;
   cloneElt.getElementById("colors").innerHTML = optionColor;
-  //cloneElt.getElementById("quantity").innerHTML = optionQuantite;
+
   document.getElementById("item").appendChild(cloneElt);
 }
 
