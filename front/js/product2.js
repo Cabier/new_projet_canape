@@ -6,6 +6,7 @@ console.log(id);
 // ELEMENTS A MODIFIER
 const colors = document.querySelector('#colors');
 const combien = document.querySelector('#quantity');
+console.log(typeof combien)
 const imgAtribute = document.querySelector('.item__img > img');
 const productTitle = document.querySelector('#title');
 const price = document.querySelector('#price');
@@ -17,7 +18,7 @@ const navBar = document.getElementsByClassName('limitedWidthBlock')
 const navImg = document.getElementsByClassName('banniere')
 
 // DECLARATION DE LA FONCTION AU CLICK
-addToCart.addEventListener("click", ajouteAuPanier)
+addToCart.addEventListener("click", addToCart)
 
 // FETCH AVEC ID PRODUIT
 fetch("http://localhost:3000/api/products/" + id)
