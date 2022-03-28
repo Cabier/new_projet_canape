@@ -35,11 +35,11 @@ async function main() {
      * et on l'ajoute dans le pannier 
      * return fin de fonction  (sinon on va ajouter le produit au pannier dans l'étape d'apres)
      */
-    let findArticle = cart.find(ap => (ap._id == article._id && ap.selectedColor == laCouleur));
-    if ( findArticle ) {
+    let findArticle = cart.find(ap => (ap._id == article._id && ap.selectedColor == laCouleur));// find cherche un élément dans un tableau par rapport à une condition
+    if ( findArticle ) {// dans la formule ci dessus je cherche 
       let articleposition = cart.indexOf(findArticle); // position dans l'array de l'article
       if (articleposition >= 0) {
-        cart[articleposition].quantite = parseInt(cart[articleposition].quantite) + parseInt(laQuantite);
+        cart[articleposition].quantite = parseInt(cart[articleposition].quantite) + parseInt(laQuantite);//parseint convertie une chaine de caractère en nombre entier
         cartString = JSON.stringify(cart);
         localStorage.setItem("cart", cartString);
         alert("votre produit à bien été ajouté");

@@ -31,11 +31,11 @@ if (cart.length <= 0) {
                   <div class="cart__item__content__titlePrice">
                     <h2>${cart[k].name}</h2>
                     <h2>${cart[k].selectedColor}</h2>
-                    <p id="${cart[k]._id}price">${(
+                    <p id="${cart[k]._id + cart[k].selectedColor}price">${(// ajouter un autre id + la couleur
         cart[k].price * cart[k].quantite
       )
         .toString()
-        .replace(/00/, "")}€</p>
+        .replace(/00/, "")} €
                   </div>
                   <div class="cart__item__content__settings">
                     <div class="cart__item__content__settings__quantity">
@@ -90,16 +90,21 @@ for (let i = 0; i < deleteItem.length; i++) {
       input.addEventListener("change", (event) => {
         event.preventDefault();
         for (i = 0; i < cart.length; i++) {
-          if (cart[i]._id === input.dataset.id) {
+          if (
+            cart[i]._id === input.dataset.id &&
+            cart[i].selectedColor === input.dataset.color
+          ) {
             cart[i].quantite = event.target.value;
             localStorage.setItem("cart", JSON.stringify(cart));
             let actualCartString = localStorage.getItem("cart");
             newCart = JSON.parse(actualCartString);
             changePrix(newCart);
-            const prix = document.getElementById(`${newCart[i]._id}price`);
+            const prix = document.getElementById(
+              `${newCart[i]._id + newCart[i].selectedColor}price`
+            );
             prix.innerHTML = (newCart[i].price * newCart[i].quantite)
               .toString()
-              .replace(/00/, "");
+              .replace(/00/, "")+ " €";
           }
         }
       });
@@ -127,7 +132,6 @@ for (let i = 0; i < deleteItem.length; i++) {
 </div>`;
 
       insertionPrix.innerHTML = structure2;
-
     }
   }
   //----------------FIN DU MONTANT TOTAL DU PANIER------------------//
@@ -182,164 +186,179 @@ const afficherFormulaireHtml = () => {
 };
 afficherFormulaireHtml();
 // ******************************* FORMULAIRE *******************************
-let contactStorage = localStorage.getItem('contact');
+let contactStorage = localStorage.getItem("contact");
 let form = document.getElementsByClassName("cart__order__form");
-console.log("form",form)
+console.log("form", form);
 let formFirstName = document.getElementById("firstName");
-console.log("prénom",formFirstName)
+console.log("prénom", formFirstName);
 let formLastName = document.getElementById("lastName");
-console.log("nom",formLastName)
+console.log("nom", formLastName);
 let formAdress = document.getElementById("address");
-console.log("formAdress",formAdress)
+console.log("formAdress", formAdress);
 let formCity = document.getElementById("city");
-console.log("formCity",formCity)
+console.log("formCity", formCity);
 let formMail = document.getElementById("email");
-console.log("formMail",formMail)
+console.log("formMail", formMail);
 let formValid = document.getElementById("order");
-console.log("formValid",formValid)
+console.log("formValid", formValid);
 // REGEX PRENOM //
-formFirstName.addEventListener('change', function() {
-  validFirstName(this)
+formFirstName.addEventListener("change", function () {
+  validFirstName(this);
 });
-const validFirstName =  function (inputFirstName){
-  let FirstRegExp = new RegExp ('^[a-zA-Z-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ._\s -]*$', 'g');;
-  let verifFirstName = FirstRegExp.test(inputFirstName.value)
-  if(verifFirstName){
-      formFirstName.style.boxShadow ='0px 0px 10px green'
-      formFirstName.style.boxSizing = 'border-box'
-      document.getElementById("firstNameErrorMsg").innerHTML = "Prénom Valide !"
-      document.getElementById("firstNameErrorMsg").style.color ='#B0F59A'
-  }else{
-      formFirstName.style.boxShadow ='0px 0px 10px darkred'
-      formFirstName.style.boxSizing = 'border-box'
-      document.getElementById("firstNameErrorMsg").innerHTML = `"${inputFirstName.value} n'est pas valide !"`
-  }    
+const validFirstName = function (inputFirstName) {
+  let FirstRegExp = new RegExp(
+    "^[a-zA-Z-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ._s -]*$",
+    "g"
+  );
+  let verifFirstName = FirstRegExp.test(inputFirstName.value);
+  if (verifFirstName) {
+    formFirstName.style.boxShadow = "0px 0px 10px green";
+    formFirstName.style.boxSizing = "border-box";
+    document.getElementById("firstNameErrorMsg").innerHTML = "Prénom Valide !";
+    document.getElementById("firstNameErrorMsg").style.color = "#B0F59A";
+  } else {
+    formFirstName.style.boxShadow = "0px 0px 10px darkred";
+    formFirstName.style.boxSizing = "border-box";
+    document.getElementById(
+      "firstNameErrorMsg"
+    ).innerHTML = `"${inputFirstName.value} n'est pas valide !"`;
+  }
 };
-formLastName.addEventListener('change', function() {
-  validLastName(this)
+formLastName.addEventListener("change", function () {
+  validLastName(this);
 });
-const validLastName =  function (inputLastName){
-  let NameRegExp = new RegExp ('^[a-zA-Z-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ._\s -]*$', 'g');;
-  let verifLastName = NameRegExp.test(inputLastName.value)
-  if(verifLastName){
-      formLastName.style.boxShadow ='0px 0px 10px green'
-      formLastName.style.boxSizing = 'border-box'
-      document.getElementById("lastNameErrorMsg").innerHTML = "Nom Valide !"
-      document.getElementById("lastNameErrorMsg").style.color ='#B0F59A'
-
-  }else{
-      formLastName.style.boxShadow ='0px 0px 10px red'
-      formLastName.style.boxSizing = 'border-box'
-      document.getElementById("lastNameErrorMsg").innerHTML = `"${inputLastName.value} n'est pas valide !"`
-  }    
+const validLastName = function (inputLastName) {
+  let NameRegExp = new RegExp(
+    "^[a-zA-Z-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ._s -]*$",
+    "g"
+  );
+  let verifLastName = NameRegExp.test(inputLastName.value);
+  if (verifLastName) {
+    formLastName.style.boxShadow = "0px 0px 10px green";
+    formLastName.style.boxSizing = "border-box";
+    document.getElementById("lastNameErrorMsg").innerHTML = "Nom Valide !";
+    document.getElementById("lastNameErrorMsg").style.color = "#B0F59A";
+  } else {
+    formLastName.style.boxShadow = "0px 0px 10px red";
+    formLastName.style.boxSizing = "border-box";
+    document.getElementById(
+      "lastNameErrorMsg"
+    ).innerHTML = `"${inputLastName.value} n'est pas valide !"`;
+  }
 };
 // REGEX ADRESSE//
-formAdress.addEventListener('change', function() {
-  validAdress(this)
+formAdress.addEventListener("change", function () {
+  validAdress(this);
 });
-const validAdress =  function (inputAdress){
-  let AdressRegExp = new RegExp ('^[ a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ._\s -]*$', 'g');
-  let testAdress = AdressRegExp.test(inputAdress.value)
-  if(testAdress){
-      formAdress.style.boxShadow ='0px 0px 10px green'
-      formAdress.style.boxSizing = 'border-box'
-      document.getElementById("addressErrorMsg").innerHTML = "Adresse Valide !"
-      document.getElementById("addressErrorMsg").style.color ='#B0F59A'
-  }else{
-      formAdress.style.boxShadow ='0px 0px 10px red'
-      formAdress.style.boxSizing = 'border-box'
-      document.getElementById("addressErrorMsg").innerHTML = `"${inputAdress.value} Adresse invalide !"`
-  }    
+const validAdress = function (inputAdress) {
+  let AdressRegExp = new RegExp(
+    "^[ a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ._s -]*$",
+    "g"
+  );
+  let testAdress = AdressRegExp.test(inputAdress.value);
+  if (testAdress) {
+    formAdress.style.boxShadow = "0px 0px 10px green";
+    formAdress.style.boxSizing = "border-box";
+    document.getElementById("addressErrorMsg").innerHTML = "Adresse Valide !";
+    document.getElementById("addressErrorMsg").style.color = "#B0F59A";
+  } else {
+    formAdress.style.boxShadow = "0px 0px 10px red";
+    formAdress.style.boxSizing = "border-box";
+    document.getElementById(
+      "addressErrorMsg"
+    ).innerHTML = `"${inputAdress.value} Adresse invalide !"`;
+  }
 };
 // REGEX VILLE
-formCity.addEventListener('change', function() {
-  validCity(this)
+formCity.addEventListener("change", function () {
+  validCity(this);
 });
-const validCity =  function (inputCity){
-  let villeRegExp = new RegExp ('^[a-zA-Z-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ._\s-]*$', 'g');
-  let testVille = villeRegExp.test(inputCity.value)
-  if(testVille){
-      formCity.style.boxShadow ='0px 0px 10px green'
-      formCity.style.boxSizing = 'border-box'
-      document.getElementById("cityErrorMsg").innerHTML = "Ville Valide !"
-      document.getElementById("cityErrorMsg").style.color ='#B0F59A'
-
-  }else{
-      formCity.style.boxShadow ='0px 0px 10px red'
-      formCity.style.boxSizing = 'border-box'
-      document.getElementById("cityErrorMsg").innerHTML = `"${inputCity.value} n'est pas valide !"`
-  }    
+const validCity = function (inputCity) {
+  let villeRegExp = new RegExp(
+    "^[a-zA-Z-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ._s-]*$",
+    "g"
+  );
+  let testVille = villeRegExp.test(inputCity.value);
+  if (testVille) {
+    formCity.style.boxShadow = "0px 0px 10px green";
+    formCity.style.boxSizing = "border-box";
+    document.getElementById("cityErrorMsg").innerHTML = "Ville Valide !";
+    document.getElementById("cityErrorMsg").style.color = "#B0F59A";
+  } else {
+    formCity.style.boxShadow = "0px 0px 10px red";
+    formCity.style.boxSizing = "border-box";
+    document.getElementById(
+      "cityErrorMsg"
+    ).innerHTML = `"${inputCity.value} n'est pas valide !"`;
+  }
 };
 // REGEX EMAIL//
-formMail.addEventListener('change', function() {
-  validMail(this)
+formMail.addEventListener("change", function () {
+  validMail(this);
 });
-const validMail =  function (inputMail){
-  let emailRegExp = new RegExp (/^[\w\W]+[@]{1}[\w\W.-_]+[.]{1}[\w\W]{2,10}$/)
-  let verifMail = emailRegExp.test(inputMail.value)
-  if(verifMail){
-      formMail.style.boxShadow ='0px 0px 10px green'
-      
-      document.getElementById("emailErrorMsg").innerHTML = "Email valide !"
-      document.getElementById("emailErrorMsg").style.color ='#B0F59A'
+const validMail = function (inputMail) {
+  let emailRegExp = new RegExp(/^[\w\W]+[@]{1}[\w\W.-_]+[.]{1}[\w\W]{2,10}$/);
+  let verifMail = emailRegExp.test(inputMail.value);
+  if (verifMail) {
+    formMail.style.boxShadow = "0px 0px 10px green";
 
-  }else{
-      formMail.style.boxShadow ='0px 0px 10px red'
-      formMail.style.boxSizing = 'border-box'    
-      document.getElementById("emailErrorMsg").innerHTML = `"${inputMail.value} Email invalide !"`
-    }    
-  };
-  formValid.addEventListener("click", function(evt) {
-    evt.preventDefault();
-    if(
-        !formFirstName.value ||
-        !formLastName.value ||
-        !formAdress.value ||
-        !formCity.value ||
-        !formMail.value
-        
-    ) {
-      const cmd = document.getElementById('order')
-        cmd.setAttribute('value', 'Veuillez remplir tous les champs et cliquer')
-        return evt.preventDefault();
-      }else{
-      const contact = {
-         firstName: `${formFirstName.value}`,
-          lastName: `${formLastName.value}`,
-          address: `${formAdress.value}`,
-          city: `${formCity.value}`,
-          email: `${formMail.value}`
+    document.getElementById("emailErrorMsg").innerHTML = "Email valide !";
+    document.getElementById("emailErrorMsg").style.color = "#B0F59A";
+  } else {
+    formMail.style.boxShadow = "0px 0px 10px red";
+    formMail.style.boxSizing = "border-box";
+    document.getElementById(
+      "emailErrorMsg"
+    ).innerHTML = `"${inputMail.value} Email invalide !"`;
+  }
+};
+formValid.addEventListener("click", function (evt) {
+  evt.preventDefault();
+  if (
+    !formFirstName.value ||
+    !formLastName.value ||
+    !formAdress.value ||
+    !formCity.value ||
+    !formMail.value
+  ) {
+    const cmd = document.getElementById("order");
+    cmd.setAttribute("value", "Veuillez remplir tous les champs et cliquer");
+    return evt.preventDefault();
+  } else {
+    const contact = {
+      firstName: `${formFirstName.value}`,
+      lastName: `${formLastName.value}`,
+      address: `${formAdress.value}`,
+      city: `${formCity.value}`,
+      email: `${formMail.value}`,
+    };
+    localStorage.setItem("contact", JSON.stringify(contact));
+    let products = [];
+    for (i = 0; i < cart.length; i++) {
+      products.push(cart[i]._id);
     }
-    localStorage.setItem("contact",JSON.stringify(contact));
-    let products = []
-    for(i=0;i<cart.length;i++){
-      products.push(cart[i]._id)
-    }
-   let sendProducts ={contact,products}
-    console.log("sendProducts",sendProducts)
-    
-    fetch("http://localhost:3000/api/products/order"  , {
-        method: "POST",
-        body: JSON.stringify(sendProducts),
-        headers: {
-            "content-type" : "application/json",
-        }   
+    let sendProducts = { contact, products };
+    console.log("sendProducts", sendProducts);
+
+    fetch("http://localhost:3000/api/products/order", {
+      method: "POST",
+      body: JSON.stringify(sendProducts),
+      headers: {
+        "content-type": "application/json",
+      },
     })
-// POUR AVOIR LE RETOUR SERVEUR    
-    .then(res => {
+      // POUR AVOIR LE RETOUR SERVEUR
+      .then((res) => {
         return res.json();
-    }).then((data) => {
-        let orderId = data.orderId
-       window.location.href= `./confirmation.html?id=${orderId}` ; 
-    console.log(orderId);
-    }).catch((error) =>{
+      })
+      .then((data) => {
+        let orderId = data.orderId;
+        window.location.href = `./confirmation.html?id=${orderId}`;
+        console.log(orderId);
+      })
+      .catch((error) => {
         console.log(error);
-    })
-}
-}
-);
-  // POUR AVOIR LE RETOUR SERVEUR    
-  
-
-
-      
+      });
+  }
+});
+// POUR AVOIR LE RETOUR SERVEUR
